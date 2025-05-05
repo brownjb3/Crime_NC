@@ -10,11 +10,12 @@
     <style>
 
         html { height:100%;}
-
-        body {height:100%;padding: 0;
-          margin: 0;
+        body {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        font-family: "Times New Roman", Times, serif;
 }
-
         #map {
         width: 100%;
         height: 100%;
@@ -23,11 +24,11 @@
         .info.legend {
         background: white;
         padding: 10px;
-        font: 14px/16px Arial, Helvetica, sans-serif;
+        font: 14px/16px "Times New Roman", Times, serif;
         box-shadow: 0 0 15px rgba(0,0,0,0.2);
         border-radius: 5px;
         line-height: 18px;
-        color: #555;
+        color: #080808;
 }
 
         .info.legend i {
@@ -56,13 +57,39 @@
         .year-buttons {
         position: absolute;
         top: 10px;
-        left: 10px;
+        right: 10px; /* Changed from left to right */
         z-index: 1000;
+        display: flex;
+        flex-direction: column; /* Stack vertically */
+        gap: 5px; /* Adds spacing between buttons */
 }
+
         .year-buttons button {
-        margin-right: 5px;
         padding: 6px 10px;
         font-weight: bold;
+        width: 120px; /* Optional: sets consistent width */
+}
+
+        .article-link {
+        position: absolute;
+        bottom: 80px;
+        left: 10px;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        z-index: 1000;
+}
+
+        .article-link a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+}
+
+        .article-link a:hover {
+        text-decoration: underline;
 }
 
     </style>
@@ -78,6 +105,10 @@
     <div id="map-title-bubble">Crimes in NC Counties</div>
     <div id="map"></div>
     
+    <div class="article-link">
+        Main article located <a href="https://www.carolinajournal.com/violent-crime-up-in-nc-down-nationwide/" target="_blank">here</a>.
+    </div>
+
     <div class="year-buttons">
         <button onclick="show2023()">Show 2023</button>
         <button onclick="show2022()">Show 2022</button>
@@ -88,7 +119,6 @@
     </div>
 
     <div class='legend'></div>
-
 
     <script>
 
@@ -115,17 +145,15 @@
         '#d73027'   
         ];
 
-     
       function getColor(d) {
-            for (var i = 0; i < grades.length - 1; i++) {
-            if ( d > grades[i] && d < grades[i+1] ) return colors[i];
-            }
-            if (d > grades[grades.length - 1]) return colors[grades.length];
+        for (var i = 0; i < grades.length - 1; i++) {
+        if ( d > grades[i] && d < grades[i+1] ) return colors[i];
+        }
+        if (d > grades[grades.length - 1]) return colors[grades.length];
 }
 
-     
       function makeStyle(propertyName) {
-      return function(feature) {
+        return function(feature) {
         return {  
             weight: 2,
             opacity: 1,
@@ -152,12 +180,12 @@
 }
 
     function resetHighlight(e) {
-    e.target.setStyle(e.target.featureStyle);
+        e.target.setStyle(e.target.featureStyle);
 }
 
     function zoomToFeature(e) {
-    previousCenter = map.getCenter();
-    previousZoom = map.getZoom();
+        previousCenter = map.getCenter();
+        previousZoom = map.getZoom();
 
     map.fitBounds(e.target.getBounds());
 }
@@ -169,11 +197,11 @@ function showPopupInfo(e) {
   var popupContent = "<strong>" + props.CountyName + "</strong><br>" +
     "Total Crimes: " + Number(value).toLocaleString();
 
-  layer.bindPopup(popupContent).openPopup();
+    layer.bindPopup(popupContent).openPopup();
 }
     
 function makeOnEachFeature(propertyName) {
-  return function(feature, layer) {
+    return function(feature, layer) {
     layer.featureStyle = makeStyle(propertyName)(feature);
     layer.setStyle(layer.featureStyle);
 
@@ -200,99 +228,115 @@ function makeOnEachFeature(propertyName) {
     });
 
 let layer2023 = L.geoJson.ajax("data/2023Crime.geojson", {
-  style: makeStyle("ChargesS"),
-  onEachFeature: makeOnEachFeature("ChargesS")
-}).addTo(map);
+    style: makeStyle("ChargesS"),
+    onEachFeature: makeOnEachFeature("ChargesS")
+    }).addTo(map);
 
 let layer2022 = L.geoJson.ajax("data/2022Crime.geojson", {
-  style: makeStyle("2022Offens"),
-  onEachFeature: makeOnEachFeature("2022Offens")
+    style: makeStyle("2022Offens"),
+    onEachFeature: makeOnEachFeature("2022Offens")
 });
 
 let layer2021 = L.geoJson.ajax("data/2021Crime.geojson", {
-  style: makeStyle("Offenses"),
-  onEachFeature: makeOnEachFeature("Offenses")
+    style: makeStyle("Offenses"),
+    onEachFeature: makeOnEachFeature("Offenses")
 });
 
 let layer2020 = L.geoJson.ajax("data/2020Crime.geojson", {
-  style: makeStyle("Offenses"),
-  onEachFeature: makeOnEachFeature("Offenses")
+    style: makeStyle("Offenses"),
+    onEachFeature: makeOnEachFeature("Offenses")
 });
 
 let layer2019 = L.geoJson.ajax("data/2019Crime.geojson", {
-  style: makeStyle("Offenses"),
-  onEachFeature: makeOnEachFeature("Offenses")
+    style: makeStyle("Offenses"),
+    onEachFeature: makeOnEachFeature("Offenses")
 });
 
 let layer2018 = L.geoJson.ajax("data/2018Crime.geojson", {
-  style: makeStyle("Offenses"),
-  onEachFeature: makeOnEachFeature("Offenses")
+    style: makeStyle("Offenses"),
+    onEachFeature: makeOnEachFeature("Offenses")
 });
 
-  function show2023() {
-  currentProperty = "ChargesS";
-  if (map.hasLayer(layer2022)) map.removeLayer(layer2022);
-  if (!map.hasLayer(layer2023)) map.addLayer(layer2023);
+function show2023() {
+    currentProperty = "ChargesS";
+    if (map.hasLayer(layer2022)) map.removeLayer(layer2022);
+    if (!map.hasLayer(layer2023)) map.addLayer(layer2023);
 }
 
 function show2022() {
-  currentProperty = "2022Offen";
-  if (map.hasLayer(layer2023)) map.removeLayer(layer2023);
-  if (!map.hasLayer(layer2022)) map.addLayer(layer2022);
+    currentProperty = "2022Offen";
+    if (map.hasLayer(layer2023)) map.removeLayer(layer2023);
+    if (!map.hasLayer(layer2022)) map.addLayer(layer2022);
 }
 
 function show2021() {
-  currentProperty = "Offenses";
-  [layer2020, layer2022, layer2023].forEach(l => map.removeLayer(l));
-  if (!map.hasLayer(layer2021)) map.addLayer(layer2021);
+    currentProperty = "Offenses";
+    [layer2020, layer2022, layer2023].forEach(l => map.removeLayer(l));
+    if (!map.hasLayer(layer2021)) map.addLayer(layer2021);
 }
 
 function show2020() {
-  currentProperty = "Offenses";
-  [layer2021, layer2022, layer2023].forEach(l => map.removeLayer(l));
-  if (!map.hasLayer(layer2020)) map.addLayer(layer2020);
+    currentProperty = "Offenses";
+    [layer2021, layer2022, layer2023].forEach(l => map.removeLayer(l));
+    if (!map.hasLayer(layer2020)) map.addLayer(layer2020);
 }
 
 function show2019() {
-  currentProperty = "Offenses";
-  [layer2020, layer2021, layer2022, layer2023, layer2018].forEach(l => map.removeLayer(l));
-  if (!map.hasLayer(layer2019)) map.addLayer(layer2019);
+    currentProperty = "Offenses";
+    [layer2020, layer2021, layer2022, layer2023, layer2018].forEach(l => map.removeLayer(l));
+    if (!map.hasLayer(layer2019)) map.addLayer(layer2019);
 }
 
 function show2018() {
-  currentProperty = "Offenses";
-  [layer2019, layer2020, layer2021, layer2022, layer2023].forEach(l => map.removeLayer(l));
-  if (!map.hasLayer(layer2018)) map.addLayer(layer2018);
+    currentProperty = "Offenses";
+    [layer2019, layer2020, layer2021, layer2022, layer2023].forEach(l => map.removeLayer(l));
+    if (!map.hasLayer(layer2018)) map.addLayer(layer2018);
 }
 
-    var legend = L.control({ position: 'bottomright' });
+var legend = L.control({ position: 'bottomright' });
 
-    legend.onAdd = function (map) {
-    var div = L.DomUtil.create('div', 'info legend'),
-        labels = [];
+legend.onAdd = function (map) {
+var div = L.DomUtil.create('div', 'info legend'),
+    labels = [];
 
     for (var i = 0; i < grades.length - 1; i++) {
-        labels.push(
-        '<i style="background:' + colors[i] + '"></i> ' +
-        grades[i] + ' – ' + grades[i + 1]);
+    labels.push(
+    '<i style="background:' + colors[i] + '"></i> ' +
+    grades[i] + ' – ' + grades[i + 1]);
 }
 
-    labels.push('<i style="background:' + colors[grades.length - 1] + '"></i> ' +
-        grades[grades.length - 1] + '+');
+labels.push('<i style="background:' + colors[grades.length - 1] + '"></i> ' +
+    grades[grades.length - 1] + '+');
 
     div.innerHTML = '<strong>Total Crimes</strong><br>' + labels.join('<br>');
     return div;
 };
 
-legend.addTo(map);
-
-      
-
-      map.attributionControl.addAttribution('');
+legend.addTo(map); 
 
     </script>
 
-
+<div class="attribution" style="
+  position: absolute;
+  bottom: 0;
+  left: 0; 
+  background: rgba(255, 255, 255, 0.95);
+  padding: 4px 08px;
+  font-size: 10px;
+  border-top-right-radius: 8px;
+  box-shadow: 0 -2px 4px rgba(0,0,0,0.2);
+  z-index: 1000;
+  max-width: 60%;
+  line-height: 1.5;
+">
+  <strong>Attributions:</strong><br>
+  Data from the <a href="https://www.ncsbi.gov/SSRV?report=/UCR/IndexOffensesByAgencyInCounty" target="_blank">NC SBI Crime Statistics Report</a> and <a href="https://www.nconemap.gov/" target="_blank">NC OneMap</a>.<br>
+  Map by <a href="https://leafletjs.com/" target="_blank">Leaflet</a> using basemap tiles from <a href="https://carto.com/" target="_blank">CARTO</a>.<br>
+  Libraries used: 
+  <a href="https://github.com/calvinmetcalf/leaflet-ajax" target="_blank">leaflet-ajax</a>, 
+  <a href="https://gka.github.io/chroma.js/" target="_blank">chroma.js</a>, 
+  <a href="https://jquery.com/" target="_blank">jQuery</a>.
+</div>
 
 </body>
 </html>
