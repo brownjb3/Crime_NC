@@ -81,6 +81,10 @@
     <div class="year-buttons">
         <button onclick="show2023()">Show 2023</button>
         <button onclick="show2022()">Show 2022</button>
+        <button onclick="show2021()">Show 2021</button>
+        <button onclick="show2020()">Show 2020</button>
+        <button onclick="show2019()">Show 2019</button>
+        <button onclick="show2018()">Show 2018</button>
     </div>
 
     <div class='legend'></div>
@@ -161,7 +165,7 @@
 function showPopupInfo(e) {
   var layer = e.target;
   var props = layer.feature.properties;
-  var value = props["ChargesS"] ?? props["2022Offens"];
+  var value = props[currentProperty] ?? "N/A";
   var popupContent = "<strong>" + props.CountyName + "</strong><br>" +
     "Total Crimes: " + Number(value).toLocaleString();
 
@@ -195,7 +199,7 @@ function makeOnEachFeature(propertyName) {
     map.setView(previousCenter, previousZoom);
     });
 
-    let layer2023 = L.geoJson.ajax("data/2023Crime.geojson", {
+let layer2023 = L.geoJson.ajax("data/2023Crime.geojson", {
   style: makeStyle("ChargesS"),
   onEachFeature: makeOnEachFeature("ChargesS")
 }).addTo(map);
@@ -203,6 +207,26 @@ function makeOnEachFeature(propertyName) {
 let layer2022 = L.geoJson.ajax("data/2022Crime.geojson", {
   style: makeStyle("2022Offens"),
   onEachFeature: makeOnEachFeature("2022Offens")
+});
+
+let layer2021 = L.geoJson.ajax("data/2021Crime.geojson", {
+  style: makeStyle("Offenses"),
+  onEachFeature: makeOnEachFeature("Offenses")
+});
+
+let layer2020 = L.geoJson.ajax("data/2020Crime.geojson", {
+  style: makeStyle("Offenses"),
+  onEachFeature: makeOnEachFeature("Offenses")
+});
+
+let layer2019 = L.geoJson.ajax("data/2019Crime.geojson", {
+  style: makeStyle("Offenses"),
+  onEachFeature: makeOnEachFeature("Offenses")
+});
+
+let layer2018 = L.geoJson.ajax("data/2018Crime.geojson", {
+  style: makeStyle("Offenses"),
+  onEachFeature: makeOnEachFeature("Offenses")
 });
 
   function show2023() {
@@ -215,6 +239,30 @@ function show2022() {
   currentProperty = "2022Offen";
   if (map.hasLayer(layer2023)) map.removeLayer(layer2023);
   if (!map.hasLayer(layer2022)) map.addLayer(layer2022);
+}
+
+function show2021() {
+  currentProperty = "Offenses";
+  [layer2020, layer2022, layer2023].forEach(l => map.removeLayer(l));
+  if (!map.hasLayer(layer2021)) map.addLayer(layer2021);
+}
+
+function show2020() {
+  currentProperty = "Offenses";
+  [layer2021, layer2022, layer2023].forEach(l => map.removeLayer(l));
+  if (!map.hasLayer(layer2020)) map.addLayer(layer2020);
+}
+
+function show2019() {
+  currentProperty = "Offenses";
+  [layer2020, layer2021, layer2022, layer2023, layer2018].forEach(l => map.removeLayer(l));
+  if (!map.hasLayer(layer2019)) map.addLayer(layer2019);
+}
+
+function show2018() {
+  currentProperty = "Offenses";
+  [layer2019, layer2020, layer2021, layer2022, layer2023].forEach(l => map.removeLayer(l));
+  if (!map.hasLayer(layer2018)) map.addLayer(layer2018);
 }
 
     var legend = L.control({ position: 'bottomright' });
